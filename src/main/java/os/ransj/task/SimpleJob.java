@@ -6,6 +6,14 @@ package os.ransj.task;
 
 public abstract class SimpleJob extends Job {
 
+    public SimpleJob() {
+
+    }
+
+    public SimpleJob(TaskExecutor executor) {
+        on(executor);
+    }
+
     @Override
     public Object execute(Object[] params) {
         execute();

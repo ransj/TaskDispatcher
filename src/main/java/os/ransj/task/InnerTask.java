@@ -12,8 +12,9 @@ import java.util.concurrent.TimeUnit;
  */
 
 final class InnerTask implements Task, Runnable {
-    static ScheduledExecutorService mScheduleExecutor = Executors.newScheduledThreadPool(Runtime.getRuntime().availableProcessors());
-    static ExecutorService mQueueExecutor = Executors.newSingleThreadExecutor();
+    static ExceptionThreadFactory mThreadFactory = new ExceptionThreadFactory();
+    static ScheduledExecutorService mScheduleExecutor = Executors.newScheduledThreadPool(Runtime.getRuntime().availableProcessors(), mThreadFactory);
+    static ExecutorService mQueueExecutor = Executors.newSingleThreadExecutor(mThreadFactory);
     boolean mIsCanceled;
     List<Job> mJobs = new ArrayList<>();
     Job mJob;
