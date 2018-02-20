@@ -12,9 +12,6 @@ import java.util.concurrent.TimeUnit;
  */
 
 final class InnerTask implements Task, Runnable {
-    static ExceptionThreadFactory mThreadFactory = new ExceptionThreadFactory();
-    static ScheduledExecutorService mScheduleExecutor = Executors.newScheduledThreadPool(Runtime.getRuntime().availableProcessors(), mThreadFactory);
-    static ExecutorService mQueueExecutor = Executors.newSingleThreadExecutor(mThreadFactory);
     boolean mIsCanceled;
     List<Job> mJobs = new ArrayList<>();
     Job mJob;
@@ -80,15 +77,15 @@ final class InnerTask implements Task, Runnable {
         TaskExecutor executor = mJob.mExecutor;
         if (delay > 0) {
             if (TaskExecutor.pool.equals(executor)) {
-                mScheduleExecutor.schedule(this, delay, TimeUnit.MILLISECONDS);
+                TaskDispather.mScheduleExecutor.schedule(this, delay, TimeUnit.MILLISECONDS);
             } else if (TaskExecutor.queue.equals(executor)) {
-                mQueueExecutor.execute(new DelayInnerTask(this, delay));
+                TaskDispather.mQueueExecutor.execute(new DelayInnerTask(this, delay));
             }
         } else {
             if (TaskExecutor.pool.equals(executor)) {
-                mScheduleExecutor.execute(this);
+                TaskDispather.mScheduleExecutor.execute(this);
             } else if (TaskExecutor.queue.equals(executor)) {
-                mQueueExecutor.execute(this);
+                TaskDispather.mQueueExecutor.execute(this);
             }
         }
     }
